@@ -4,7 +4,14 @@
       <div class="brand">
         <span class="icon">🧠</span> MemeGen
       </div>
-      <nav class="nav-links">
+
+      <!-- Bouton burger pour mobile -->
+      <button class="burger" @click="showMenu = !showMenu">
+        ☰
+      </button>
+
+      <!-- Navigation responsive -->
+      <nav class="nav-links" :class="{ open: showMenu }">
         <router-link to="/" exact-active-class="active">🎨 Générateur</router-link>
         <router-link to="/gallery" exact-active-class="active">🖼️ Galerie</router-link>
       </nav>
@@ -17,7 +24,8 @@
 </template>
 
 <script setup>
-// aucune logique ici pour l’instant
+import { ref } from 'vue'
+const showMenu = ref(false)
 </script>
 
 <style scoped>
@@ -57,10 +65,18 @@
   font-size: 1.4rem;
 }
 
+.burger {
+  display: none;
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Navigation links */
 .nav-links {
   display: flex;
   gap: 1rem;
-  flex-wrap: wrap;
 }
 
 .nav-links a {
@@ -90,5 +106,31 @@
   max-width: 1300px;
   margin: 0 auto;
   box-sizing: border-box;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .burger {
+    display: block;
+  }
+
+  .nav-links {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    margin-top: 1rem;
+  }
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .nav-links a {
+    padding: 0.7rem 1rem;
+  }
+
+  .navbar {
+    align-items: flex-start;
+  }
 }
 </style>
