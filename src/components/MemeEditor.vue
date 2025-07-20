@@ -1,45 +1,57 @@
 <template>
   <div class="editor">
-    <h1 class="title">🎨 Générateur de Mème</h1>
+    <h1 class="title">
+      <FontAwesomeIcon icon="image" class="icon" />
+      Générateur de Mème
+    </h1>
 
     <div class="editor-body">
       <div class="form-side">
         <label class="file-upload-label">
           <input type="file" accept="image/*" @change="handleImageUpload" hidden />
-          <span class="file-upload-btn">📁 Télécharger une image</span>
-          <span class="file-name">{{ imageFileName || "Aucune image sélectionnée" }}</span>
+          <span class="file-upload-btn">
+            <FontAwesomeIcon icon="image" class="icon" />
+            Choisir une image
+          </span>
         </label>
 
         <div v-if="imageUrl">
           <div class="inputs">
             <input class="text-input" v-model="topText" placeholder="Texte en haut" />
             <input class="text-input" v-model="bottomText" placeholder="Texte en bas" />
+          </div>
 
-            <div class="options">
-              <label>🎨 Couleur :
-                <input type="color" v-model="textColor" />
-              </label>
+          <div class="options">
+            <label>Couleur :
+              <input type="color" v-model="textColor" />
+            </label>
+            <label>Taille :
+              <input type="range" min="16" max="60" v-model="fontSize" />
+            </label>
+            <label>Police :
+              <select v-model="fontFamily">
+                <option>Arial</option>
+                <option>Comic Sans MS</option>
+                <option>Impact</option>
+                <option>Times New Roman</option>
+                <option>Courier New</option>
+              </select>
+            </label>
+          </div>
 
-              <label>🔠 Taille :
-                <input type="range" min="16" max="60" v-model="fontSize" />
-              </label>
-
-              <label>✍️ Police :
-                <select v-model="fontFamily">
-                  <option>Arial</option>
-                  <option>Comic Sans MS</option>
-                  <option>Impact</option>
-                  <option>Times New Roman</option>
-                  <option>Courier New</option>
-                </select>
-              </label>
-            </div>
-
-            <div class="buttons">
-              <button @click="downloadMeme" class="btn primary">💾 Télécharger</button>
-              <button @click="shareMeme" class="btn">📤 Partager</button>
-              <button @click="reset" class="btn secondary">♻️ Réinitialiser</button>
-            </div>
+          <div class="buttons">
+            <button @click="downloadMeme" class="btn primary">
+              <FontAwesomeIcon icon="download" class="icon" />
+              Télécharger
+            </button>
+            <button @click="shareMeme" class="btn">
+              <FontAwesomeIcon icon="share-alt" class="icon" />
+              Partager
+            </button>
+            <button @click="reset" class="btn secondary">
+              <FontAwesomeIcon icon="redo" class="icon" />
+              Réinitialiser
+            </button>
           </div>
         </div>
       </div>
@@ -81,7 +93,7 @@ const handleImageUpload = (e) => {
   const file = e.target.files[0]
   if (file) {
     imageUrl.value = URL.createObjectURL(file)
-    imageFileName.value = file.name
+    imageFileName.value = file.name.replace(/\.[^/.]+$/, "")
   }
 }
 
@@ -97,7 +109,7 @@ const downloadMeme = async () => {
   const canvas = await html2canvas(memeRef.value)
   const dataUrl = canvas.toDataURL()
   const link = document.createElement('a')
-  link.download = 'meme.png'
+  link.download = `${imageFileName.value || 'meme'}-meme.png`
   link.href = dataUrl
   link.click()
   const existing = JSON.parse(localStorage.getItem('memes') || '[]')
@@ -112,12 +124,9 @@ const shareMeme = async () => {
   }
   const canvas = await html2canvas(memeRef.value)
   canvas.toBlob(async (blob) => {
-    const file = new File([blob], 'meme.png', { type: blob.type })
+    const file = new File([blob], `${imageFileName.value || 'meme'}-meme.png`, { type: blob.type })
     try {
-      await navigator.share({
-        title: 'Mème',
-        files: [file],
-      })
+      await navigator.share({ title: 'Mème', files: [file] })
     } catch (err) {
       console.error('Erreur de partage :', err)
     }
@@ -127,75 +136,65 @@ const shareMeme = async () => {
 
 <style scoped>
 .editor {
-  max-width: 1200px;
+  max-width: 1280px;
   margin: auto;
-  padding: 2rem;
+  padding: 3rem;
   background: #f9fafb;
-  border-radius: 12px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-  font-family: 'Segoe UI', sans-serif;
+  border-radius: 1rem;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.04);
+  font-family: 'Inter', sans-serif;
 }
 
 .title {
-  font-size: 2rem;
-  margin-bottom: 2rem;
-  color: #1f2937;
   text-align: center;
+  font-size: 2.25rem;
+  margin-bottom: 2rem;
+  color: #0f172a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.icon {
+  margin-right: 0.4rem;
 }
 
 .editor-body {
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
-  align-items: flex-start;
   justify-content: center;
+  align-items: flex-start;
 }
 
-.form-side {
-  flex: 1;
-  min-width: 300px;
-  max-width: 400px;
-}
-
+.form-side,
 .image-side {
   flex: 1;
-  min-width: 300px;
+  min-width: 320px;
   max-width: 600px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
-  padding: 1rem;
+  background-color: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  padding: 2rem;
 }
 
 .file-upload-label {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  cursor: pointer;
-  font-weight: 500;
-  margin-bottom: 1.5rem;
-}
-
-.file-upload-btn {
-  background-color: #facc15;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  color: #1f2937;
+  display: block;
+  text-align: center;
+  background-color: #e0f2fe;
+  border: 2px dashed #38bdf8;
+  color: #0369a1;
   font-weight: 600;
-  transition: background-color 0.2s ease;
+  padding: 1rem;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-bottom: 1.5rem;
+  transition: background 0.3s;
 }
 
-.file-upload-btn:hover {
-  background-color: #eab308;
-}
-
-.file-name {
-  color: #6b7280;
-  font-style: italic;
-  font-size: 0.95rem;
+.file-upload-label:hover {
+  background-color: #bae6fd;
 }
 
 .inputs {
@@ -205,25 +204,73 @@ const shareMeme = async () => {
 }
 
 .text-input {
-  padding: 0.5rem;
-  border: 1px solid #d1d5db;
+  padding: 0.6rem 1rem;
+  border: 1px solid #cbd5e1;
   border-radius: 8px;
   font-size: 1rem;
-  width: 100%;
+  background-color: #f8fafc;
+  transition: all 0.3s ease;
+}
+
+.text-input:focus {
+  border-color: #2563eb;
+  background-color: #fff;
+  outline: none;
 }
 
 .options {
+  margin-top: 1.5rem;
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  justify-content: space-between;
 }
 
 .options label {
   display: flex;
   flex-direction: column;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #334155;
+  flex: 1;
+  min-width: 120px;
+}
+
+.buttons {
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.btn {
+  padding: 0.75rem 1.25rem;
   font-size: 0.95rem;
-  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn.primary {
+  background-color: #2563eb;
+  color: white;
+}
+
+.btn.primary:hover {
+  background-color: #1e40af;
+}
+
+.btn.secondary {
+  background-color: #e2e8f0;
+  color: #1e293b;
+}
+
+.btn.secondary:hover {
+  background-color: #cbd5e1;
 }
 
 .meme-container {
@@ -231,21 +278,22 @@ const shareMeme = async () => {
   display: flex;
   justify-content: center;
   align-items: center;
+  max-width: 100%;
 }
 
 .meme {
   position: relative;
-  max-width: 100%;
-  border: 2px solid #e5e7eb;
   border-radius: 10px;
-  background: #000;
   overflow: hidden;
+  border: 2px solid #cbd5e1;
+  background: #000;
+  max-width: 100%;
 }
 
 .meme img {
-  display: block;
-  max-width: 100%;
+  width: 100%;
   height: auto;
+  display: block;
 }
 
 .text {
@@ -253,11 +301,10 @@ const shareMeme = async () => {
   width: 90%;
   left: 50%;
   transform: translateX(-50%);
-  font-weight: bold;
+  font-weight: 900;
   text-align: center;
   pointer-events: none;
   user-select: none;
-  word-break: break-word;
 }
 
 .text[contenteditable] {
@@ -273,84 +320,44 @@ const shareMeme = async () => {
   bottom: 10px;
 }
 
-.buttons {
-  margin-top: 2rem;
-  display: flex;
-  justify-content: flex-start;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.btn {
-  padding: 10px 20px;
-  font-size: 1rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.2s;
-}
-
-.btn.primary {
-  background-color: #3b82f6;
-  color: white;
-}
-
-.btn.primary:hover {
-  background-color: #2563eb;
-}
-
-.btn.secondary {
-  background-color: #6b7280;
-  color: white;
-}
-
-.btn.secondary:hover {
-  background-color: #4b5563;
-}
-
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 900px) {
   .editor-body {
     flex-direction: column;
-    align-items: center;
+    gap: 1.5rem;
+    align-items: stretch;
   }
-
   .form-side,
   .image-side {
     max-width: 100%;
-    width: 100%;
+    padding: 1.2rem;
   }
-
-  .image-side {
-    margin-top: 1.5rem;
-    padding: 0.5rem;
+  .meme-container {
+    margin-top: 0.5rem;
   }
-
   .buttons {
     flex-direction: column;
-    align-items: stretch;
+    gap: 0.7rem;
+    margin-top: 1.2rem;
   }
-
-  .btn {
-    width: 100%;
-    text-align: center;
-  }
-
-  .options {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .options label {
-    width: 100%;
-  }
-
-  .text-input {
-    font-size: 1rem;
-  }
-
   .title {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+    flex-direction: column;
+    gap: 0.2rem;
   }
 }
+
+@media screen and (max-width: 600px) {
+  .editor {
+    padding: 1rem;
+  }
+  .title {
+    font-size: 1.1rem;
+    padding: 0.5rem 0;
+  }
+  .form-side,
+  .image-side {
+    padding: 0.7rem;
+  }
+}
+
 </style>
