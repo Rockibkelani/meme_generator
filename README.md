@@ -1,6 +1,6 @@
-# MemeGen - Générateur de Mèmes en ligne
+# GenMem - Générateur de Mèmes en ligne
 
-MemeGen est une application Vue 3 moderne et responsive permettant de créer, personnaliser, télécharger et sauvegarder des mèmes en toute simplicité. Elle offre une interface intuitive avec des fonctionnalités complètes, inspirée des standards professionnels.
+GenMem est une application Vue 3 moderne et responsive permettant de créer, personnaliser, télécharger et sauvegarder des mèmes en toute simplicité. Elle offre une interface intuitive avec des fonctionnalités complètes, inspirée des standards professionnels.
 
 ## Démo
 
@@ -12,7 +12,7 @@ MemeGen est une application Vue 3 moderne et responsive permettant de créer, pe
 - Ajout de texte en haut et en bas
 - Personnalisation (taille, couleur, police)
 - Téléchargement PNG
-- Partage via Web API (si supporté)
+- Partage via Web
 - Mode édition WYSIWYG (texte modifiable directement sur le mème)
 - Galerie locale persistante (LocalStorage)
 - Interface responsive mobile/tablette
@@ -34,7 +34,8 @@ MemeGen est une application Vue 3 moderne et responsive permettant de créer, pe
 ## Installation locale
 
 ```bash
-git clone https://github.com/votre-user/memegen.git
+git clone git@github.com:Rockibkelani/meme_generator.git
+cd meme_generator
 npm install
 npm run dev
 ````
@@ -50,7 +51,7 @@ npm run build
 ## Arborescence
 
 ```
-memegen/
+meme_generator
 │
 ├── public/
 ├── src/
@@ -71,7 +72,7 @@ memegen/
 
 ## Déploiement Netlify
 
-1. Connecte ton repo à Netlify
+1. Connecte repo à Netlify
 2. **Build command** : `npm run build`
 3. **Publish directory** : `dist/`
 
