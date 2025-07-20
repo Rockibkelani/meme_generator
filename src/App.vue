@@ -3,7 +3,7 @@
     <header class="navbar">
       <div class="brand">
         <FontAwesomeIcon icon="brain" class="logo" />
-        <span class="brand-text">MemeGen</span>
+        <span class="brand-text">GenMem</span>
       </div>
 
       <button class="burger" @click="showMenu = !showMenu">
